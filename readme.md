@@ -10,7 +10,7 @@ Global radiosonde stations have provided a very unique and imporatant datasets f
 <img src="https://www.ncdc.noaa.gov/sites/default/files/styles/full_page_width/public/igra_stationmap.jpg?itok=j0biEjcy" alt="global radiosonde stations" width="600" height="400">
 
 
-During the past 4 years, I used different computer language for lidar data processing and I have developed different query functions to get radiosonde data, including python, matlab and IDL. I hope this repository can be useful and energy-saving for those who is currently working on lidar data processing.
+During the past 4 years, I made several query functions with different computer language to retrieve radiosonde data. I hope this repository can be useful and time-saving for those who is currently working on lidar data processing.
 
 ### Methodology
 
@@ -18,7 +18,7 @@ All the scripts are based on parsing of the html from [Wyoming Radiosond Browse 
 
 Basically, we will construct the query url to the server and parsing the results from the retrurned html text. This is very straightforward. What we should pay attention to, is the type of the sonding. Sometimes, results of old sonding or wind sonding will be returned. So a warning module should be added. But for the IDL and python scripts, which have a history of years, I will don't have the passion yet to improve it. But for the matlab verision, I have add this processing module and also some minor data quality control. You can easily convert it to python or IDL version as you like.
 
-Regarding to the {sitenum} of different stations, you can find it in [radiosonde-station-list.txt](radiosonde-station-list.txt).
+Regarding to the `sitenum` of different stations, you can find it in [radiosonde-station-list.txt](./doc/radiosonde-station-list.txt).
 
 Enjoy it!!!
 
@@ -29,5 +29,3 @@ Special thanks to [Heese Birgit](https://www.tropos.de/institut/ueber-uns/mitarb
 ### References
 
 1. Bucholtz, A. (1995). "Rayleigh-scattering calculations for the terrestrial atmosphere." Applied optics 34(15): 2765-2773.
-
-
