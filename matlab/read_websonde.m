@@ -1,14 +1,20 @@
-function [alt, temp, pres, rh, globalAttri] = read_websonde(measTime, tRange, sitenum)
-%read_websonde search the closest radionsde based on the ui in http://weather.uwyo.edu/upperair/sounding.html. And read the data.
+function [alt, temp, pres, rh, globalAttri] = read_websonde(measTime, tRange, sitenum, dFormat)
+%READ_WEBSONDE search the closest radionsde based on the Wyoming sounding portal and retrieve the data from HTML.
 %   Example:
-%       [alt, temp, pres, rh, globalAttri] = read_websonde(measTime, tRange, sitenum)
+%       [alt, temp, pres, rh, globalAttri] = read_websonde(measTime, tRange, sitenum, dFormat)
 %   Inputs:
 %       measTime: float
-%           polly measurement time. [datenum] 
+%           lidar measurement time (UTC). [datenum]
+%           00:00 or 12:00 in the given date is suggested.
 %       tRange: 2-element array
-%           search range for the online radiosonde. [current whole day]
+%           search range for the online radiosonde.
 %       sitenum: integer
-%           site number, which can be found in doc/radiosonde-station-list.txt. You can update the list with using download_radiosonde_list.m
+%           site number, which can be found in doc/radiosonde-station-list.txt.
+%           You can update the list with using download_radiosonde_list.m
+%       dFormat: char
+%           data format ('TEMP' or 'BUFR'). Default: 'TEMP'
+%           TEMP (traditional ascii format): http://weather.uwyo.edu/upperair/sounding.html
+%           BUFR (binary universal format): http://weather.uwyo.edu/upperair/bufrraob.shtml
 %   Outputs:
 %       alt: array
 %           altitute for each range bin. [m]
@@ -24,8 +30,13 @@ function [alt, temp, pres, rh, globalAttri] = read_websonde(measTime, tRange, si
 %           sitenum: site number for current used sonde.
 %   History:
 %       2018-12-22. First Edition by Zhenping
+%       2020-04-05. Support BUFR data format.
 %   Contact:
 %       zhenping@tropos.de
+
+if ~ exist('dFormat', 'var')
+    dFormat = 'TEMP';
+end
 
 alt = [];
 temp = [];
@@ -34,9 +45,17 @@ rh = [];
 
 [thisYear, thisMonth, day1] = datevec(tRange(1)); 
 [~, ~, day2] = datevec(tRange(2)); 
-URL = sprintf('http://weather.uwyo.edu/cgi-bin/sounding?region=europe&TYPE=TEXT%3ALIST&YEAR=%04d&MONTH=%02d&FROM=%02d00&TO=%02d00&STNM=%5d', thisYear, thisMonth, day1, day2, sitenum);
 
-[pressure, altitude, temperature, relh, mTime] = ceilo_bsc_WebSonde(URL);
+if strcmpi(dFormat, 'temp')
+    URL = sprintf('http://weather.uwyo.edu/cgi-bin/sounding?region=europe&TYPE=TEXT%%3ALIST&YEAR=%04d&MONTH=%02d&FROM=%02d00&TO=%02d00&STNM=%5d', thisYear, thisMonth, day1, day2, sitenum);
+elseif strcmpi(dFormat, 'bufr')
+    URL = sprintf('http://weather.uwyo.edu/cgi-bin/bufrraob.py?src=bufr&datetime=%s%%20%s&id=%5d&type=TEXT:LIST', datestr(measTime, 'yyyy-mm-dd'), datestr(measTime, 'HH:MM:SS'), sitenum);
+else
+    warning('Unknown dFormat: %s', dFormat);
+    return;
+end
+
+[pressure, altitude, temperature, relh, mTime] = parse_sounding(URL, dFormat);
 
 if isempty(mTime)
     warning('No radiosonde data was found.\n%s\n', URL);
