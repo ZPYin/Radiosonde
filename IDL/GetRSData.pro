@@ -77,6 +77,7 @@ end
 ;
 ; :Keywords:
 ;    FILENAME: the filename for the HDF file.
+;    BUFR: If this keyword is set, BUFR format data will be downloaded.
 ;    PRES: If this keyword is set, the pressure will be returned. Unit: hPa
 ;    HGHT: If this keyword is set, the height will be returned. Unit: m
 ;    TEMP: If this keyword is set, the temperature will be returned. Unit: C
@@ -103,6 +104,7 @@ end
 ;
 FUNCTION GetRSData, year, date, hour, siteN, $
                     FILENAME = filename, $
+                    BUFR = bufr, $
                     PRES = pres, $
                     HGHT = hght, $
                     TEMP = temp, $
@@ -142,6 +144,7 @@ FUNCTION GetRSData, year, date, hour, siteN, $
 ;--------------------------------------------------------------------------------------;
 ;                               Parameters Initialize
 ;--------------------------------------------------------------------------------------;
+IF KEYWORD_SET(BUFR) THEN BEGIN
     baseURL = 'http://weather.uwyo.edu/cgi-bin/sounding?region=naconf&TYPE=TEXT%3ALIST&'
     URL = StrJoin([baseURL, $
                    'YEAR='+year, $
@@ -149,6 +152,14 @@ FUNCTION GetRSData, year, date, hour, siteN, $
                    'FROM='+StrMid(date, 2, 2)+hour, $
                    'TO='+StrMid(date, 2, 2)+hour, $
                    'STNM='+siteN], '&')
+ENDIF ELSE BEGIN
+    baseURL = 'http://weather.uwyo.edu/cgi-bin/bufrraob.py?src=bufr&'
+    URL = StrJoin([baseURL, $
+                   'datetime='+STRJOIN([year,StrMid(date, 0, 2),StrMid(date, 2, 2)], '-'), $
+                   '%20'+hour, $
+                   ':00:00&id='+siteN, $
+                   '&type=TEXT:LIST'], '')
+END
 ;--------------------------------------------------------------------------------------;
 
     oURL = Obj_New('IDLnetURL')
