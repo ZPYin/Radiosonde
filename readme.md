@@ -3,7 +3,7 @@
 
 ### Description
 
-Global radiosonde stations have provided a very unique and imporatant datasets for atmopshere research. According to the Integrated Gloabal Radiosonde Archive ([IGRA](https://www.ncdc.noaa.gov/data-access/weather-balloon/integrated-global-radiosonde-archive)), more than 2,700 ground-base radiosonde stations had or have been functioning all around the wrold, which cover all the big cities and interested geolocations. These accurate in-situ data can be applied to calculate the atmospheric molecule optical properties [ref 1](#References), like backscatter and extinction coefficient. These parameters are of high importance for lidar calibration, quality control and lidar retrieving algorithms. Therefore, how to get these dataset is an essential part of lidar data processing.
+Global radiosonde stations have provided a very unique and important datasets for atmosphere research. According to the Integrated Global Radiosonde Archive ([IGRA][1]), more than 2,700 ground-base radiosonde stations had or have been functioning all around the world, which cover all the big cities and interested geolocations. These accurate in-situ data can be applied to calculate the atmospheric molecule optical properties [[1](#References)], like backscatter and extinction coefficient. These parameters are of high importance for lidar calibration, quality control and lidar retrieving algorithms. Therefore, how to get these dataset is an essential part of lidar data processing.
 
 - global distribution of radiosonde stations
 <br>
@@ -14,9 +14,9 @@ During the past 4 years, I made several query functions with different computer 
 
 ### Methodology
 
-All the scripts are based on parsing of the html from [Wyoming Radiosond Browse Webpage](http://weather.uwyo.edu/upperair/sounding.html). The description of the returned parameters can be found [here](http://weather.uwyo.edu/upperair/columns.html).
+All the scripts are based on parsing of the html from Wyoming Radiosonde Browse Webpage ([old][2]|[new][3]). The description of the returned parameters can be found [here][4].
 
-Basically, we will construct the query url to the server and parsing the results from the retrurned html text. This is very straightforward. What we should pay attention to, is the type of the sonding. Sometimes, results of old sonding or wind sonding will be returned. So a warning module should be added. But for the IDL and python scripts, which have a history of years, I will don't have the passion yet to improve it. But for the matlab verision, I have add this processing module and also some minor data quality control. You can easily convert it to python or IDL version as you like.
+Basically, we will construct the query url to the server and parsing the results from the returned html text. This is very straightforward. What we should pay attention to, is the type of the sounding. Sometimes, results of old sounding or wind sounding will be returned. So a warning module should be added. But for the IDL and python scripts, which have a history of years, I don't have the passion yet to improve it. But for the matlab version, I have add this processing module and also some minor data quality control. You can easily convert it to python or IDL version as you like.
 
 Regarding to the `sitenum` of different stations, you can find it in [radiosonde-station-list.txt](./doc/radiosonde-station-list.txt).
 
@@ -24,8 +24,14 @@ Enjoy it!!!
 
 ### Acknowledgement
 
-Special thanks to [Heese Birgit](https://www.tropos.de/institut/ueber-uns/mitarbeitende/birgit-heese/) for the matlab script.
+Special thanks to [Heese Birgit][5] for the matlab script.
 
 ### References
 
 1. Bucholtz, A. (1995). "Rayleigh-scattering calculations for the terrestrial atmosphere." Applied optics 34(15): 2765-2773.
+
+[1]: https://www.ncdc.noaa.gov/data-access/weather-balloon/integrated-global-radiosonde-archive
+[2]: http://weather.uwyo.edu/upperair/sounding.html
+[3]: http://weather.uwyo.edu/upperair/bufrraob.shtml
+[4]: http://weather.uwyo.edu/upperair/columns.html
+[5]: https://www.tropos.de/institut/ueber-uns/mitarbeitende/birgit-heese/
