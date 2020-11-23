@@ -40,6 +40,17 @@ def GetRSData(year, month, day, hour, *,
     -------
         compound numpy array with fields of ('PRES', 'HGHT', 'TEMP', 'DWPT',
         'RELH', 'MIXR', 'DRCT', 'SKNT', 'THTA', 'THTE', 'THTV')
+        - PRES: atmospheric pressure. [hPa]
+        - HGHT: geopotential height. [meter]
+        - TEMP: temperature. [celsius]
+        - DWPT: dewpoint temperature. [celsius]
+        - RELH: relative humidity. [%]
+        - MIXR: mixing ratio. [gram/kilogram]
+        - DRCT: wind direction. [degrees true]
+        - SKNT: wind speed. [knot]
+        - THTA: potential temperature. [kelvin]
+        - THTE: equivalent potential temperature. [kelvin]
+        - THTV: virtual potential temperature. [kelvin]
     Examples
     --------
     data = GetRSData(2014, 5, 8, 0, siteNum='57494', file='temp.h5')
@@ -96,8 +107,14 @@ def GetRSData(year, month, day, hour, *,
                 else float(dataStr[index][35:42])
             data[index]['DRCT'] = None if dataStr[index][42:49] == '       ' \
                 else float(dataStr[index][42:49])
-            data[index]['SKNT'] = None if dataStr[index][49:56] == '       ' \
-                else float(dataStr[index][49:56])
+            if dFormat.lower() == 'temp':
+                data[index]['SKNT'] = None \
+                    if dataStr[index][49:56] == '       ' \
+                    else float(dataStr[index][49:56])
+            elif dFormat.lower() == 'bufr':
+                data[index]['SKNT'] = None \
+                    if dataStr[index][49:56] == '       ' \
+                    else float(dataStr[index][49:56]) * 1.944
             data[index]['THTA'] = None if dataStr[index][56:63] == '       ' \
                 else float(dataStr[index][56:63])
             data[index]['THTE'] = None if dataStr[index][63:70] == '       ' \

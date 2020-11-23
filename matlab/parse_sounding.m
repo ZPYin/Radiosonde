@@ -29,7 +29,7 @@ function [pressure, altitude, temperature, relh, mTime] = temp_sounding(URL)
 %
 %   altitude    - height [m]
 %
-%   temperature - temperature [�C]
+%   temperature - temperature [°C]
 %
 %   relh        - relative humidity [%]
 %
@@ -143,7 +143,7 @@ function [pressure, altitude, temperature, relh] = bufr_sounding(URL)
 %
 %   altitude    - height [m]
 %
-%   temperature - temperature [�C]
+%   temperature - temperature [°C]
 %
 %   relh        - relative humidity [%]
 
