@@ -62,7 +62,7 @@ end
 
 ;+
 ; :Author:
-;  yinzp & Yunfei
+;  yinzp
 ;
 ; :Description:
 ;   Retrieve the radiosonde data from the site: 
