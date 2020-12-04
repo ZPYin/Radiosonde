@@ -65,8 +65,9 @@ end
 ;  yinzp
 ;
 ; :Description:
-;   Retrieve the radiosonde data from the site: 
-;   http://weather.uwyo.edu/upperair/sounding.html.
+;   Retrieve the radiosonde data from Wyoming Sounding page.
+;   For sounding data for all Chinese stations after 2020, keyword of '/BUFR'
+;   must be set, in case new sounding webpage will be used.
 ;
 ; :Params:
 ;    year: [String] yyyy eg, '2014'
