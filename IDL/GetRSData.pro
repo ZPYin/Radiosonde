@@ -214,7 +214,7 @@ END
     
     ; unit of wind speed is unified to knot
     idx_sknt=where(finite(sknt),/null)
-    sknt[idx_sknt]=sknt[idx_sknt]*wind_speed_factor
+    if (idx_sknt ne !null) then sknt[idx_sknt]=sknt[idx_sknt]*wind_speed_factor
     
     ; save to .h5 file
     IF Keyword_Set(filename) THEN BEGIN
