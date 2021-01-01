@@ -70,11 +70,12 @@ end
 ;   must be set, in case new sounding webpage will be used.
 ;
 ; :Params:
-;    year: [String] yyyy eg, '2014'
-;    date: [String] mmdd eg, '0120'
-;    hour: [String] hh   eg, '00'. 
+;    year: [String] yyyy e.g., '2014'
+;    date: [String] mmdd e.g., '0120'
+;    hour: [String] hh   e.g., '00'. 
 ;          Note: it is the UTC time. (GMT:00)
-;    siteN: [String] sssss eg, '57494'
+;    siteN: [String] five-digit WMO identification number (see ./doc/radiosonde-station-list.txt).
+;           e.g., '57494' for Wuhan
 ;
 ; :Keywords:
 ;    FILENAME: the filename for the HDF file.

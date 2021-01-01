@@ -9,8 +9,7 @@ function [alt, temp, pres, rh, globalAttri] = read_websonde(measTime, tRange, si
 %       tRange: 2-element array
 %           search range for the online radiosonde.
 %       sitenum: integer
-%           site number, which can be found in doc/radiosonde-station-list.txt.
-%           You can update the list with using download_radiosonde_list.m
+%           five-digit WMO identification number, which can be found in doc/radiosonde-station-list.txt.
 %       dFormat: char
 %           data format ('TEMP' or 'BUFR'). Default: 'TEMP'
 %           TEMP (traditional ascii format): http://weather.uwyo.edu/upperair/sounding.html

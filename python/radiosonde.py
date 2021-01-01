@@ -33,7 +33,8 @@ def GetRSData(year, month, day, hour, *,
     dFormat: string
         data format, only 'temp' (default) and 'bufr' are available.
     siteNum: int
-        observation site number.
+        five-digit WMO identification number (see ./doc/radiosonde-station-list.txt).
+        e.g., 57494 (for Wuhan)
     file: string
         If it is set, the data will be saved in the file.
     Returns

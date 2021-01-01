@@ -1,3 +1,11 @@
+# The file can be accessed through https://www1.ncdc.noaa.gov/pub/data/igra/igra2-station-list.txt
+# Station_Code: country_code (two-character) + network code (one-character) + site_number (eight-character)
+# i.e., ACM00078861=AC (Antigua and Barbuda) + M + 00078861 (site_number: 000 + five-digit WMO identification number)
+# where two character country_code can be checked through https://www1.ncdc.noaa.gov/pub/data/igra/igra2-country-list.txt
+# Details of naming conventions can be found in https://www1.ncdc.noaa.gov/pub/data/igra/igra2-readme.txt
+# The five-digit WMO identification number can be used for radiosonde data query via data portal of wyoming university website (http://weather.uwyo.edu/upperair/bufrraob.shtml or http://weather.uwyo.edu/upperair/sounding.html)
+
+Station_Code latitude longitude elevation location start_year current_year total_measurements
 ACM00078861  17.1170  -61.7830   10.0    COOLIDGE FIELD (UA)            1947 1993  13896
 AEM00041217  24.4333   54.6500   16.0    ABU DHABI INTERNATIONAL AIRPOR 1983 2018  36109
 AEXUAE05467  25.2500   55.3700    4.0    SHARJAH                        1935 1942   2477
