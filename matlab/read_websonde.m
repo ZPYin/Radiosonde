@@ -67,9 +67,9 @@ if isempty(mTime)
     return;
 end
 
-[datetime, iSonde] = min(abs(measTime - mTime));
+[~, iSonde] = min(abs(measTime - mTime));
 globalAttri.URL = URL;
-globalAttri.datetime = datetime;
+globalAttri.datetime = mTime(iSonde);
 globalAttri.sitenum = sitenum;
 
 alt = altitude{iSonde};
