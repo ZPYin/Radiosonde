@@ -1,37 +1,43 @@
 function [alt, temp, pres, rh, globalAttri] = read_websonde(measTime, tRange, sitenum, dFormat)
-%READ_WEBSONDE search the closest radionsde based on the Wyoming sounding portal and retrieve the data from HTML.
-%   Example:
-%       [alt, temp, pres, rh, globalAttri] = read_websonde(measTime, tRange, sitenum, dFormat)
-%   Inputs:
-%       measTime: float
-%           lidar measurement time (UTC). [datenum]
-%           00:00 or 12:00 in the given date is suggested.
-%       tRange: 2-element array
-%           search range for the online radiosonde.
-%       sitenum: integer
-%           five-digit WMO identification number, which can be found in doc/radiosonde-station-list.txt.
-%       dFormat: char
-%           data format ('TEMP' or 'BUFR'). Default: 'TEMP'
-%           TEMP (traditional ascii format): http://weather.uwyo.edu/upperair/sounding.html
-%           BUFR (binary universal format): http://weather.uwyo.edu/upperair/bufrraob.shtml
-%   Outputs:
-%       alt: array
-%           altitute for each range bin. [m]
-%       temp: array
-%           temperature for each range bin. If no valid data, NaN will be filled. [C]
-%       pres: array
-%           pressure for each range bin. If no valid data, NaN will be filled. [hPa]
-%       rh: array
-%           relative humidity for each range bin. If no valid data, NaN will be filled. [%]
-%       globalAttri: struct
-%           URL: URL which can be used to retrieve the current returned values.
-%           datetime: measurement time for current used sonde. [datenum]
-%           sitenum: site number for current used sonde.
-%   History:
-%       2018-12-22. First Edition by Zhenping
-%       2020-04-05. Support BUFR data format.
-%   Contact:
-%       zhenping@tropos.de
+% READ_WEBSONDE search the closest radionsde based on the Wyoming sounding portal and retrieve the data from HTML.
+%
+% USAGE:
+%    % Usecase 1:
+%    [alt, temp, pres, rh, globalAttri] = read_websonde(datenum(2021, 12, 3), [datenum(2021, 12, 2), datenum(2021, 12, 4)], 57494, 'BUFR')
+%
+% INPUTS:
+%    measTime: float
+%        lidar measurement time (UTC). [datenum]
+%        00:00 or 12:00 in the given date is suggested.
+%    tRange: 2-element array
+%        search range for the online radiosonde.
+%    sitenum: integer
+%        five-digit WMO identification number, which can be found in doc/radiosonde-station-list.txt.
+%    dFormat: char
+%        data format ('TEMP' or 'BUFR'). Default: 'TEMP'
+%        TEMP (traditional ascii format): http://weather.uwyo.edu/upperair/sounding.html
+%        BUFR (binary universal format): http://weather.uwyo.edu/upperair/bufrraob.shtml
+%
+% OUTPUTS:
+%    alt: array
+%        altitute for each range bin. [m]
+%    temp: array
+%        temperature for each range bin. If no valid data, NaN will be filled. [C]
+%    pres: array
+%        pressure for each range bin. If no valid data, NaN will be filled. [hPa]
+%    rh: array
+%        relative humidity for each range bin. If no valid data, NaN will be filled. [%]
+%    globalAttri: struct
+%        URL: URL which can be used to retrieve the current returned values.
+%        datetime: measurement time for current used sonde. [datenum]
+%        sitenum: site number for current used sonde.
+%
+% EXAMPLE:
+%
+% HISTORY:
+%    2018-12-22: First Edition by Zhenping
+%    2020-04-05: Support BUFR data format.
+% .. Authors: - zp.yin@whu.edu.cn
 
 if ~ exist('dFormat', 'var')
     dFormat = 'TEMP';

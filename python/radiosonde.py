@@ -1,4 +1,3 @@
-import os
 import requests
 import h5py
 import datetime as dt
@@ -57,8 +56,8 @@ def GetRSData(year, month, day, hour, *,
     data = GetRSData(2014, 5, 8, 0, siteNum='57494', file='temp.h5')
     History
     -------
-    2017-08-01. First Edition by ZP.Yin
-    2020-04-05. Support BUFR data format.
+    2017-08-01: First Edition by Zhenping Yin <zp.yin@whu.edu.cn>.
+    2020-04-05: Support BUFR data format.
     '''
 
     t = dt.datetime(year, month, day, hour, 0, 0)
@@ -80,6 +79,7 @@ def GetRSData(year, month, day, hour, *,
         html = requests.get(reqURL).text
         soup = BeautifulSoup(html, 'lxml')
     except Exception as e:
+        print(reqURL)
         raise e('Error in loading the html!')
 
     try:
@@ -142,8 +142,8 @@ def GetRSData(year, month, day, hour, *,
 
 def main():
     data = GetRSData(
-        2020, 2, 8, 0, dFormat='BUFR',
-        siteNum=57494, file='temp.h5')
+        2021, 9, 21, 12, dFormat='BUFR',
+        siteNum=54511, file='temp.h5')
 
 
 if __name__ == '__main__':

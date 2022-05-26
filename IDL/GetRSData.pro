@@ -62,7 +62,7 @@ end
 
 ;+
 ; :Author:
-;  yinzp
+;  Zhenping Yin <zp.yin@whu.edu.cn>
 ;
 ; :Description:
 ;   Retrieve the radiosonde data from Wyoming Sounding page.
@@ -99,11 +99,9 @@ end
 ;                    PRES = pres, hght = hght, relh = relh, temp = temp, 
 ;                    filename = 'C:\Users\yinzp\Desktop\temp.h5')
 ; :History:
-;  2017-3-6
+;  2017-03-06 First version.
 ;-
-;
-;
-;
+
 FUNCTION GetRSData, year, date, hour, siteN, $
                     FILENAME = filename, $
                     BUFR = bufr, $
@@ -124,23 +122,27 @@ FUNCTION GetRSData, year, date, hour, siteN, $
     syntax = 'res = GetRSData(year, date, siteN)'
     IF N_Params() LT 3L THEN $
         Message, 'Error in "GetRSData": ' + syntax
-    
+
     IF ~ISA(year, 'String') THEN $
         Message, 'Error in "GetRSData": ' + $
                  Scope_Varname(year, LEVEL=1) + ' is not a string!'
+
     IF ~Valid_Date(year+date) THEN $
         Message, 'Error in "GetRSData": ' + $
                  Scope_Varname(date, LEVEL=1) + ' is not a valid date!'
+
     IF ~ISA(hour, 'String') THEN $ 
         Message, 'Error in "GetRSData": ' + $
-                 Scope_Varname(hour, LEVEL=1) + ' is not a a string!'
+                 Scope_Varname(hour, LEVEL=1) + ' is not a string!'
+
     IF ~(LONG(hour) LE 24 OR LONG(hour) GE 0) THEN $
         Message, 'Error in "GetRSData": ' + $
                  Scope_Varname(hour, LEVEL=1) + ' is not a valid hour!'        
+
     ; valid the site Number    
     IF ~ISA(siteN, 'String') THEN $ 
         Message, 'Error in "GetRSData": ' + $
-                 Scope_Varname(siteN, LEVEL=1) + ' is not a a string!'            
+                 Scope_Varname(siteN, LEVEL=1) + ' is not a string!'            
 ;--------------------------------------------------------------------------------------;
 
 ;--------------------------------------------------------------------------------------;
@@ -169,13 +171,13 @@ END
     oURL = Obj_New('IDLnetURL')
     content = oURL->Get(/STRING_ARRAY, URL=URL)
     Obj_Destroy, oURL
-    
+
     lineStart = (Where(Stregex(content, '<PRE>') NE -1))[0] + 1L
     lineEnd = (Where(Stregex(content, '</PRE>') NE -1))[0] - 1L
-    
+
     RSData = content[lineStart+4L:lineEnd]   ; the radiosonde data retrieved from the 
                                              ; HTML text
-    
+
     nRS = N_Elements(RSData)   
     pres = Fltarr(nRS)   ; Pressure. Unit: hPa
     hght = Fltarr(nRS)   ; Height. Unit: m
@@ -212,11 +214,11 @@ END
         thtv[iRS] = StrMid(RSData[iRS], 70, 7) EQ '       '? $
                     !VALUES.F_NAN : Float(StrMid(RSData[iRS], 70, 7))
     ENDFOR
-    
+
     ; unit of wind speed is unified to knot
     idx_sknt=where(finite(sknt),/null)
     if (idx_sknt ne !null) then sknt[idx_sknt]=sknt[idx_sknt]*wind_speed_factor
-    
+
     ; save to .h5 file
     IF Keyword_Set(filename) THEN BEGIN
         File_MKDIR, File_Dirname(filename)
@@ -234,13 +236,13 @@ END
                            ' A4, TR2, A4, TR2, A4, TR2,'+ $
                            ' A4, TR2, A4, TR2, A4, TR2,'+ $
                            ' A4, TR2, A4)') }
-                             
+
         WriteH5, Transpose([[pres], [hght], [temp], [dwpt], [relh], $
                             [mixr], [drct], [sknt], [thta], [thte], [thtv]]), $
                  filename, $
                  VARNAME = 'RadioSonde', $
                  /OVERWRITE, ATTRIBUTES = Attibute
     ENDIF
-    
+
     Return, 1L
 END
