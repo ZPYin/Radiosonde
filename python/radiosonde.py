@@ -5,15 +5,10 @@ from bs4 import BeautifulSoup
 import numpy as np
 
 
-URL = {
-    'TEMP': 'http://weather.uwyo.edu/cgi-bin/sounding?region=naconf&' +
-            'TYPE=TEXT%3ALIST&YEAR={0}&MONTH={1}&FROM={2}&TO={2}&STNM={3:d}',
-    'BUFR': 'http://weather.uwyo.edu/cgi-bin/bufrraob.py?src=bufr&' +
-            'datetime={0}%20{1}&id={2:d}&type=TEXT:LIST'}
+URL = 'http://weather.uwyo.edu/wsgi/sounding?datetime={0}%20{1}&id={2:d}&type=TEXT:LIST'
 
 
-def GetRSData(year, month, day, hour, *,
-              dFormat='TEMP', siteNum=57494, file=None):
+def GetRSData(year, month, day, hour, *, siteNum=57494, file=None):
     '''
     retrieve the radiosonde data from Wyoming website.
 
@@ -29,8 +24,6 @@ def GetRSData(year, month, day, hour, *,
         2 digit hour (UTC). e.g., 00
     Keywords
     --------
-    dFormat: string
-        data format, only 'temp' (default) and 'bufr' are available.
     siteNum: int
         five-digit WMO identification number (see ./doc/radiosonde-station-list.txt).
         e.g., 57494 (for Wuhan)
@@ -58,21 +51,13 @@ def GetRSData(year, month, day, hour, *,
     -------
     2017-08-01: First Edition by Zhenping Yin <zp.yin@whu.edu.cn>.
     2020-04-05: Support BUFR data format.
+    2025-07-09: Support inquiry through new webpage
+                (https://weather.uwyo.edu/upperair/sounding.shtml).
     '''
 
     t = dt.datetime(year, month, day, hour, 0, 0)
 
-    if dFormat.lower() == 'temp':
-        # use http://weather.uwyo.edu/upperair/sounding.html
-        reqURL = URL['TEMP'].format(
-            t.strftime('%Y'), t.strftime('%m'), t.strftime('%d%H'), siteNum
-        )
-    elif dFormat.lower() == 'bufr':
-        reqURL = URL['BUFR'].format(
-            t.strftime('%Y-%m-%d'), t.strftime('%H:%M:%S'), siteNum
-        )
-    else:
-        raise ValueError('Unknown input of dFormat')
+    reqURL = URL.format(t.strftime('%Y-%m-%d'), t.strftime('%H:%M:%S'), siteNum)
 
     # parse the data
     try:
@@ -87,10 +72,10 @@ def GetRSData(year, month, day, hour, *,
         dataStr = dataStr[5:-1]
 
         dataType = np.dtype([
-            ('PRES', np.float), ('HGHT', np.float), ('TEMP', np.float),
-            ('DWPT', np.float), ('RELH', np.float), ('MIXR', np.float),
-            ('DRCT', np.float), ('SKNT', np.float), ('THTA', np.float),
-            ('THTE', np.float), ('THTV', np.float)])
+            ('PRES', np.float64), ('HGHT', np.float64), ('TEMP', np.float64),
+            ('DWPT', np.float64), ('RELH', np.float64), ('MIXR', np.float64),
+            ('DRCT', np.float64), ('SKNT', np.float64), ('THTA', np.float64),
+            ('THTE', np.float64), ('THTV', np.float64)])
         data = np.empty(len(dataStr), dtype=dataType)
 
         for index in range(len(dataStr)):
@@ -108,14 +93,8 @@ def GetRSData(year, month, day, hour, *,
                 else float(dataStr[index][35:42])
             data[index]['DRCT'] = None if dataStr[index][42:49] == '       ' \
                 else float(dataStr[index][42:49])
-            if dFormat.lower() == 'temp':
-                data[index]['SKNT'] = None \
-                    if dataStr[index][49:56] == '       ' \
-                    else float(dataStr[index][49:56])
-            elif dFormat.lower() == 'bufr':
-                data[index]['SKNT'] = None \
-                    if dataStr[index][49:56] == '       ' \
-                    else float(dataStr[index][49:56]) * 1.944
+            data[index]['SKNT'] = None if dataStr[index][49:56] == '       ' \
+                else float(dataStr[index][49:56]) * 1.944
             data[index]['THTA'] = None if dataStr[index][56:63] == '       ' \
                 else float(dataStr[index][56:63])
             data[index]['THTE'] = None if dataStr[index][63:70] == '       ' \
@@ -141,9 +120,7 @@ def GetRSData(year, month, day, hour, *,
 
 
 def main():
-    data = GetRSData(
-        2021, 9, 21, 12, dFormat='BUFR',
-        siteNum=54511, file='temp.h5')
+    data = GetRSData(2021, 9, 21, 12, siteNum=54511, file='temp.h5')
 
 
 if __name__ == '__main__':

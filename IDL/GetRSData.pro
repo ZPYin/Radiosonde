@@ -100,6 +100,7 @@ end
 ;                    filename = 'C:\Users\yinzp\Desktop\temp.h5')
 ; :History:
 ;  2017-03-06 First version.
+;  2025-07-09 Support inquiry through new webpage
 ;-
 
 FUNCTION GetRSData, year, date, hour, siteN, $
@@ -148,24 +149,14 @@ FUNCTION GetRSData, year, date, hour, siteN, $
 ;--------------------------------------------------------------------------------------;
 ;                               Parameters Initialize
 ;--------------------------------------------------------------------------------------;
-IF KEYWORD_SET(BUFR) THEN BEGIN
-    baseURL = 'http://weather.uwyo.edu/cgi-bin/bufrraob.py?src=bufr&'
-    URL = StrJoin([baseURL, $
-                   'datetime='+STRJOIN([year,StrMid(date, 0, 2),StrMid(date, 2, 2)], '-'), $
-                   '%20'+hour, $
-                   ':00:00&id='+siteN, $
-                   '&type=TEXT:LIST'], '')    
-    wind_speed_factor=1.0D/0.5144444
-ENDIF ELSE BEGIN
-    baseURL = 'http://weather.uwyo.edu/cgi-bin/sounding?region=naconf&TYPE=TEXT%3ALIST&'
-    URL = StrJoin([baseURL, $
-                   'YEAR='+year, $
-                   'MONTH='+StrMid(date, 0, 2), $
-                   'FROM='+StrMid(date, 2, 2)+hour, $
-                   'TO='+StrMid(date, 2, 2)+hour, $
-                   'STNM='+siteN], '&')
-    wind_speed_factor=1.0D 
-END
+baseURL = 'http://weather.uwyo.edu'
+URL = StrJoin([baseURL, $
+                '/wsgi/sounding?datetime='+year, $
+                '-'+StrMid(date, 0, 2), $
+                '-'+StrMid(date, 2, 2), $
+                '%20'+hour, $
+                ':00:00&id='+siteN+'&type=TEXT:LIST'], '')
+wind_speed_factor=1.0D 
 ;--------------------------------------------------------------------------------------;
 
     oURL = Obj_New('IDLnetURL')

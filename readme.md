@@ -7,7 +7,7 @@ Global radiosonde stations have provided a very unique and important datasets fo
 
 - global distribution of radiosonde stations
 <br>
-<img src="https://www.ncdc.noaa.gov/sites/default/files/styles/full_page_width/public/igra_stationmap.jpg?itok=j0biEjcy" alt="global radiosonde stations" width="600" height="400">
+<img src="https://www.ncei.noaa.gov/sites/default/files/2021-07/igra_stationmap.jpg" alt="global radiosonde stations" width="600" height="400">
 
 
 During the past 4 years, I made several query functions with different computer language to retrieve radiosonde data. I hope this repository can be useful and time-saving for those who is currently working on lidar data processing.
