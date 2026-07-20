@@ -41,14 +41,14 @@ function [pres, alt, temp, relh, wvmr, wins, wind, dwpt, globalAttri] = read_web
 
 URL = sprintf('http://weather.uwyo.edu/wsgi/sounding?datetime=%s%%20%s&id=%5d&src=UNKNOWN&type=TEXT:LIST', datestr(measTime, 'yyyy-mm-dd'), datestr(measTime, 'HH:MM:SS'), sitenum);
 
-pres = cell(0);
-alt = cell(0);
-temp = cell(0);
-relh = cell(0);
-wvmr = cell(0);
-wins = cell(0);
-wind = cell(0);
-dwpt = cell(0);
+pres = [];
+alt = [];
+temp = [];
+relh = [];
+wvmr = [];
+wins = [];
+wind = [];
+dwpt = [];
 mTime = [];
 
 [radiosonde, status] = urlread(URL, 'Timeout', 10);

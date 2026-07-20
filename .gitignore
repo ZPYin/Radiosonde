@@ -1,6 +1,8 @@
 # exclude folders
 .vscode
 analysis
+confidential
+tmp
 
 # exclude intermediate files
 __pycache__
