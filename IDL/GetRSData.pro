@@ -155,8 +155,8 @@ URL = StrJoin([baseURL, $
                 '-'+StrMid(date, 0, 2), $
                 '-'+StrMid(date, 2, 2), $
                 '%20'+hour, $
-                ':00:00&id='+siteN+'&type=TEXT:LIST'], '')
-wind_speed_factor=1.0D 
+                ':00:00&id='+siteN+'&src=UNKNOWN&type=TEXT:LIST'], '')
+wind_speed_factor = 1.0D 
 ;--------------------------------------------------------------------------------------;
 
     oURL = Obj_New('IDLnetURL')
@@ -207,8 +207,8 @@ wind_speed_factor=1.0D
     ENDFOR
 
     ; unit of wind speed is unified to knot
-    idx_sknt=where(finite(sknt),/null)
-    if (idx_sknt ne !null) then sknt[idx_sknt]=sknt[idx_sknt]*wind_speed_factor
+    idx_sknt = where(finite(sknt), /null)
+    if (idx_sknt ne !null) then sknt[idx_sknt] = sknt[idx_sknt] * wind_speed_factor
 
     ; save to .h5 file
     IF Keyword_Set(filename) THEN BEGIN

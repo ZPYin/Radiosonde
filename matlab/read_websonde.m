@@ -39,7 +39,12 @@ function [pres, alt, temp, relh, wvmr, wins, wind, dwpt, globalAttri] = read_web
 %    2025-07-09: Support inquiry through new webpage (https://weather.uwyo.edu/upperair/sounding.shtml)
 % .. Authors: - zp.yin@whu.edu.cn
 
-URL = sprintf('http://weather.uwyo.edu/wsgi/sounding?datetime=%s%%20%s&id=%5d&src=UNKNOWN&type=TEXT:LIST', datestr(measTime, 'yyyy-mm-dd'), datestr(measTime, 'HH:MM:SS'), sitenum);
+baseURL = 'http://weather.uwyo.edu';
+URL = sprintf([baseURL, '/wsgi/sounding?', ...
+               'datetime=%s%%20%s&id=%5d', ...
+               '&src=UNKNOWN&type=TEXT:LIST'], ...
+               datestr(measTime, 'yyyy-mm-dd'), ...
+               datestr(measTime, 'HH:MM:SS'), sitenum);
 
 pres = [];
 alt = [];
@@ -51,17 +56,17 @@ wind = [];
 dwpt = [];
 mTime = [];
 
-[radiosonde, status] = urlread(URL, 'Timeout', 10);
+[rsText, status] = urlread(URL, 'Timeout', 10);
 
 if status == 0
     fprintf('Could not import radiosonde data from web.\n');
 end
 
 startStr = ['--------------------------------------------------------------'...
-                                '---------------'];
-startPos = strfind(radiosonde, startStr) + length(startStr) + 1;
-endPos = strfind(radiosonde, '</PRE>');
-obTimePos = strfind(radiosonde, 'Observations for');
+            '---------------'];
+startPos = strfind(rsText, startStr) + length(startStr) + 1;
+endPos = strfind(rsText, '</PRE>');
+obTimePos = strfind(rsText, 'Observations for');
 
 if numel(startPos) == 0 || numel(endPos) == 0 || numel(obTimePos) == 0
     fprintf ('Problem with getting radiosonde from website:\n %s\n', URL);
@@ -69,17 +74,21 @@ if numel(startPos) == 0 || numel(endPos) == 0 || numel(obTimePos) == 0
 end
 
 for iSonde = 1:int32(numel(startPos) / 2)
+    % since the 2025 update of the website, 
+    % only one radiosonde is available for each measurement time, 
+    % so the loop will only run once.
+
     iStartPos = startPos(iSonde*2);
     iEndPos = endPos(iSonde) - 1;
 
-    currentRadiosonde = radiosonde(iStartPos:iEndPos);
+    curRS = rsText(iStartPos:iEndPos);
 
     % radiosonde should now be a string, where each line has 11 values and for
     % each value there should be 7 digits. each line then has 7*11 characters
     % plus the newline information contained in character 78 at the end of the line
 
     % check if number of entries in radiosonde is insufficient
-    lines = floor(length(currentRadiosonde)/78);
+    lines = floor(length(curRS)/78);
 
     if lines < 10
         continue;
@@ -93,57 +102,57 @@ for iSonde = 1:int32(numel(startPos) / 2)
     thisWins = NaN(lines, 1);
     thisWind = NaN(lines, 1);
     thisDwpt = NaN(lines, 1);
-    thisTime = datenum(radiosonde((obTimePos + 34):(obTimePos + 51)), 'HH UTC dd mmm yyyy');
+    thisTime = datenum(rsText((obTimePos(iSonde) + 34):(obTimePos(iSonde) + 51)), 'HH UTC dd mmm yyyy');
 
     for k = 1:lines
-        index = (k-1)*78 + 1;
+        idx = (k-1)*78 + 1;
 
-        if numel(sscanf(currentRadiosonde(index:index+6), '%g')) == 0
+        if numel(sscanf(curRS(idx:idx+6), '%g')) == 0
             thisPres(k) = NaN;
         else
-            thisPres(k) = sscanf(currentRadiosonde(index:index+6), '%g');
+            thisPres(k) = sscanf(curRS(idx:idx+6), '%g');
         end
 
-        if numel(sscanf(currentRadiosonde(index+7:index+13), '%g')) == 0
+        if numel(sscanf(curRS(idx+7:idx+13), '%g')) == 0
             thisAlt(k) = NaN;
         else
-            thisAlt(k) = sscanf(currentRadiosonde(index+7:index+13), '%g');
+            thisAlt(k) = sscanf(curRS(idx+7:idx+13), '%g');
         end
 
-        if numel(sscanf(currentRadiosonde(index+14:index+20), '%g')) == 0
+        if numel(sscanf(curRS(idx+14:idx+20), '%g')) == 0
             thisTemp(k) = NaN;
         else
-            thisTemp(k) = sscanf(currentRadiosonde(index+14:index+20), '%g');
+            thisTemp(k) = sscanf(curRS(idx+14:idx+20), '%g');
         end
 
-        if numel(sscanf(currentRadiosonde(index+21:index+27), '%g')) == 0
+        if numel(sscanf(curRS(idx+21:idx+27), '%g')) == 0
             thisDwpt(k) = NaN;
         else
-            thisDwpt(k) = sscanf(currentRadiosonde(index+21:index+27), '%g');
+            thisDwpt(k) = sscanf(curRS(idx+21:idx+27), '%g');
         end
 
-        if numel(sscanf(currentRadiosonde(index+28:index+34), '%g')) == 0
+        if numel(sscanf(curRS(idx+28:idx+34), '%g')) == 0
             thisRelh(k) = NaN;
         else
-            thisRelh(k) = sscanf(currentRadiosonde(index+28:index+34), '%g');
+            thisRelh(k) = sscanf(curRS(idx+28:idx+34), '%g');
         end
 
-        if numel(sscanf(currentRadiosonde(index+35:index+41), '%g')) == 0
+        if numel(sscanf(curRS(idx+35:idx+41), '%g')) == 0
             thisWvmr(k) = NaN;
         else
-            thisWvmr(k) = sscanf(currentRadiosonde(index+35:index+41), '%g');
+            thisWvmr(k) = sscanf(curRS(idx+35:idx+41), '%g');
         end
 
-        if numel(sscanf(currentRadiosonde(index+42:index+48), '%g')) == 0
+        if numel(sscanf(curRS(idx+42:idx+48), '%g')) == 0
             thisWind(k) = NaN;
         else
-            thisWind(k) = sscanf(currentRadiosonde(index+42:index+48), '%g');
+            thisWind(k) = sscanf(curRS(idx+42:idx+48), '%g');
         end
 
-        if numel(sscanf(currentRadiosonde(index+49:index+55), '%g')) == 0
+        if numel(sscanf(curRS(idx+49:idx+55), '%g')) == 0
             thisWins(k) = NaN;
         else
-            thisWins(k) = sscanf(currentRadiosonde(index+49:index+55), '%g');
+            thisWins(k) = sscanf(curRS(idx+49:idx+55), '%g');
         end
     end
 
